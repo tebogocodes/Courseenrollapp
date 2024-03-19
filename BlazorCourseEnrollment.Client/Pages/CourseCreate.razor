@@ -1,0 +1,37 @@
+@page "/coursecreate"
+
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using BlazorCourseEnrollment.Client.Services
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject CourseService CourseService
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Create Course</h3>
+        <form @onsubmit="HandleValidSubmit">
+            <div class="form-group">
+                <label for="courseTitle">Course Title:</label>
+                <input type="text" class="form-control" id="courseTitle" placeholder="Enter course title" @bind="course.Title" />
+            </div>
+            <div class="form-group">
+                <label for="courseDescription">Course Description:</label>
+                <textarea class="form-control" id="courseDescription" rows="3" placeholder="Enter course description" @bind="course.Description"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </Authorized>
+    <NotAuthorized>
+        <h3>You are not authorized to create a course.</h3>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private Course course = new Course();
+
+    private async Task HandleValidSubmit()
+    {
+        await CourseService.CreateCourse(course);
+        NavigationManager.NavigateTo("/courses", true);
+    }
+}

@@ -1,0 +1,99 @@
+@page "/courses/{Id}"
+@inject CourseService CourseService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthenticationStateProvider CustomAuthStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Course Details</h1>
+
+        @if (course == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div>
+                <h2>@course.Name</h2>
+                <p>@course.Description</p>
+            </div>
+
+            <h3>Students</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in course.Students)
+                    {
+                        <tr>
+                            <td>@student.Name</td>
+                            <td>
+                                <button class="btn btn-danger" @onclick="() => DeregisterStudent(student)">Deregister</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <h3>Available Students</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in availableStudents)
+                    {
+                        <tr>
+                            <td>@student.Name</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="() => RegisterStudent(student)">Register</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo($"/courses/{course.Id}/edit")">Edit</button>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1>You are not authorized</h1>
+        <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo("/login")">Login</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Course course;
+    private List<Student> availableStudents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        course = await CourseService.GetCourseAsync(Id);
+        availableStudents = await StudentService.GetStudentsAsync();
+    }
+
+    private async void RegisterStudent(Student student)
+    {
+        await CourseService.AddStudentToCourseAsync(course, student);
+        await StudentService.UpdateStudentAsync(student);
+    }
+
+    private async void DeregisterStudent(Student student)
+    {
+        await CourseService.RemoveStudentFromCourseAsync(course, student);
+        await StudentService.UpdateStudentAsync(student);
+    }
+}

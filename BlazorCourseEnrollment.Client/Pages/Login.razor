@@ -1,0 +1,51 @@
+@page "/login"
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthenticationStateProvider CustomAuthStateProvider
+
+<EditForm Model="@model" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="username" @bind-Value="model.Username" />
+    <InputText id="password" @bind-Value="model.Password" />
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+@code {
+    private LoginRequest model = new LoginRequest();
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync<LoginRequest>("api/auth/login", model);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var user = await response.Content.ReadFromJsonAsync<User>();
+            CustomAuthStateProvider.MarkUserAsAuthenticated(new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
+            }, "server")));
+            NavigationManager.NavigateTo("/", true);
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+
+    public class LoginRequest
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class User
+    {
+        public string Username { get; set; }
+        public string Role { get; set; }
+    }
+}

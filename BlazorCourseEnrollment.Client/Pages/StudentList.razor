@@ -1,0 +1,46 @@
+@page "/students"
+@inject StudentService StudentService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthenticationStateProvider CustomAuthStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Students</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in students)
+                {
+                    <tr>
+                        <td>@student.Name</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo($"/students/{student.Id}")">Details</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo("/students/create")">Create Student</button>
+    </Authorized>
+    <NotAuthorized>
+        <h1>You are not authorized</h1>
+        <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo("/login")">Login</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private List<Student> students;
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await StudentService.GetStudentsAsync();
+    }
+}

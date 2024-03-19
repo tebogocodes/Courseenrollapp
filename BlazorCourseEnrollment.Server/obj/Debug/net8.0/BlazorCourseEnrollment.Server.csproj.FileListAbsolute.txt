@@ -1,0 +1,7 @@
+E:\Blazorcourses\BlazorCourseEnrollment.Server\obj\Debug\net8.0\BlazorCourseEnrollment.Server.csproj.AssemblyReference.cache
+E:\Blazorcourses\BlazorCourseEnrollment.Server\obj\Debug\net8.0\BlazorCourseEnrollment.Server.GeneratedMSBuildEditorConfig.editorconfig
+E:\Blazorcourses\BlazorCourseEnrollment.Server\obj\Debug\net8.0\BlazorCourseEnrollment.Server.AssemblyInfoInputs.cache
+E:\Blazorcourses\BlazorCourseEnrollment.Server\obj\Debug\net8.0\BlazorCourseEnrollment.Server.AssemblyInfo.cs
+E:\Blazorcourses\BlazorCourseEnrollment.Server\obj\Debug\net8.0\BlazorCourseEnrollment.Server.csproj.CoreCompileInputs.cache
+E:\Blazorcourses\BlazorCourseEnrollment.Server\obj\Debug\net8.0\BlazorCourseEnrollment.Server.MvcApplicationPartsAssemblyInfo.cs
+E:\Blazorcourses\BlazorCourseEnrollment.Server\obj\Debug\net8.0\BlazorCourseEnrollment.Server.MvcApplicationPartsAssemblyInfo.cache

@@ -1,0 +1,43 @@
+@page "/students/create"
+@inject StudentService StudentService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthenticationStateProvider CustomAuthStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Create Student</h1>
+
+        @if (student == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <EditForm Model="student" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <InputText id="name" @bind-Value="student.Name" />
+                <InputText id="email" @bind-Value="student.Email" />
+                <InputText id="password" @bind-Value="student.Password" />
+
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1>You are not authorized</h1>
+        <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo("/login")">Login</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private Student student = new Student();
+
+    private async Task HandleValidSubmit()
+    {
+        await StudentService.AddStudentAsync(student);
+        NavigationManager.NavigateTo("/students", true);
+    }
+}

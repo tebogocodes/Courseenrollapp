@@ -1,0 +1,56 @@
+@page "/courses/{Id}/edit"
+@inject CourseService CourseService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthenticationStateProvider CustomAuthStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Edit Course</h1>
+
+        @if (course == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <EditForm Model="course" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <InputText id="name" @bind-Value="course.Name" />
+                <InputText id="description" @bind-Value="course.Description" />
+
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1>You are not authorized</h1>
+        <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo("/login")">Login</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]@bind-Value="course.Name" />
+                <InputText id="description" @bind-Value="course.Description" />
+
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1>You are not authorized</h1>
+        <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo("/login")">Login</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private Course course = new Course();
+
+    private async Task HandleValidSubmit()
+    {
+        await CourseService.AddCourseAsync(course);
+        NavigationManager.NavigateTo("/courses", true);
+    }
+}

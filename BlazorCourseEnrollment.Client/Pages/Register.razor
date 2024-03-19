@@ -1,0 +1,43 @@
+@page "/register"
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthenticationStateProvider CustomAuthStateProvider
+
+<EditForm Model="@model" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="firstName" @bind-Value="model.FirstName" />
+    <InputText id="lastName" @bind-Value="model.LastName" />
+    <InputText id="email" @bind-Value="model.Email" />
+    <InputText id="password" @bind-Value="model.Password" />
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@code {
+    private RegisterRequest model = new RegisterRequest();
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync<RegisterRequest>("api/auth/register",model);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/login", true);
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+
+    public class RegisterRequest
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+}
